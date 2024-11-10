@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', loadProducts);
 const mesaId = document.querySelector('meta[name="mesa-id"]').content;
 
 function loadProducts() {
-    fetch('http://127.0.0.1:8000/api/products/all/')
+    fetch('https://sebakaze.pythonanywhere.com/api/products/all/')
         .then(response => response.json())
         .then(data => {
             displayProducts(data.products);
@@ -29,10 +29,10 @@ function displayProducts(products) {
             <p>${product.nombre}</p>
             <p class="price">$${parseFloat(product.precio).toFixed(2)}</p>
             ${stockMessage}
-            <button onclick="addToOrder(${product.id}, '${product.nombre}', ${parseFloat(product.precio).toFixed(2)})" 
+            <button onclick="addToOrder(${product.id}, '${product.nombre}', ${parseFloat(product.precio).toFixed(2)})"
                     ${product.stock <= 0 ? 'disabled' : ''}>Agregar a la Comanda</button>
         `;
-        
+
         menu.appendChild(productItem);
     });
 }
@@ -52,7 +52,6 @@ function filterCategory(category) {
     });
     document.querySelector(`.category-button[onclick*="${category}"]`).classList.add('active');
 }
-
 
 function addToOrder(productId, productName, productPrice) {
     const orderItemsContainer = document.querySelector('.order-items');
@@ -126,7 +125,7 @@ if (payButton) {
             items: orderItemsData
         });
 
-        fetch('http://127.0.0.1:8000/api/pedido/', {
+        fetch('https://sebakaze.pythonanywhere.com/api/pedido/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -148,8 +147,8 @@ if (payButton) {
             if (data.mensaje) {
                 alert(data.mensaje);
                 displayRecentOrder(orderItemsData);
-                orderItemsContainer.innerHTML = ''; 
-                updateTotal(); 
+                orderItemsContainer.innerHTML = '';
+                updateTotal();
             } else {
                 alert(data.error);
             }
@@ -158,20 +157,47 @@ if (payButton) {
     });
 }
 
-// Función para mostrar el pedido reciente
+// // Función para mostrar el pedido reciente
+// function displayRecentOrder(orderItems) {
+//     const recentOrderDetails = document.querySelector('.recent-order-details');
+//     recentOrderDetails.innerHTML = ''; // Limpiar detalles anteriores
+
+//     let totalPrecio = 0; // Inicializar total de precio
+//     orderItems.forEach(item => {
+//         const orderDetail = document.createElement('div');
+//         orderDetail.innerHTML = `<p>Producto ID: ${item.producto_id} - Precio: $${item.precio.toFixed(2)}</p>`;
+//         recentOrderDetails.appendChild(orderDetail);
+//         totalPrecio += item.precio; // Sumar precio al total
+//     });
+
+//     const totalOrderDetail = document.createElement('div');
+//     totalOrderDetail.innerHTML = `<p>Total del Pedido: $${totalPrecio.toFixed(2)}</p>`;
+//     recentOrderDetails.appendChild(totalOrderDetail);
+// }
+
+
 function displayRecentOrder(orderItems) {
     const recentOrderDetails = document.querySelector('.recent-order-details');
+    if (!recentOrderDetails) {
+        console.error("Elemento '.recent-order-details' no encontrado en el DOM.");
+        return;
+    }
+
     recentOrderDetails.innerHTML = ''; // Limpiar detalles anteriores
 
     let totalPrecio = 0; // Inicializar total de precio
-    orderItems.forEach(item => {
-        const orderDetail = document.createElement('div');
-        orderDetail.innerHTML = `<p>Producto ID: ${item.producto_id} - Precio: $${item.precio.toFixed(2)}</p>`;
-        recentOrderDetails.appendChild(orderDetail);
-        totalPrecio += item.precio; // Sumar precio al total
+    orderItems.forEach(pedido => {
+        pedido.detalles.forEach(item => {  // Iterar sobre los detalles de cada pedido
+            const orderDetail = document.createElement('div');
+            orderDetail.innerHTML = `<p>Producto: ${item.nombre} - Cantidad: ${item.cantidad} - Precio: $${item.precio.toFixed(2)}</p>`;
+            recentOrderDetails.appendChild(orderDetail);
+            totalPrecio += item.precio * item.cantidad; // Calcular el total considerando la cantidad
+        });
     });
 
     const totalOrderDetail = document.createElement('div');
     totalOrderDetail.innerHTML = `<p>Total del Pedido: $${totalPrecio.toFixed(2)}</p>`;
     recentOrderDetails.appendChild(totalOrderDetail);
 }
+////////////////////////////////////////
+
