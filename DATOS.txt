@@ -1,0 +1,14 @@
+SUPER USUARIO : adminfisher clave: adminfisher
+mesas o usuarios(lo mismo): menu1 clave: adminfisher
+
+si quieren crear mas mesas, tienen que ir al cpanel, agregar un usuario y una mesa, y a la mesa asignarle el usuario
+
+TODOS LOS USUARIOS, ESTAN SEPARADOS AHORA, SI PUDE SEPARAR USUARIOS Y PEDIDOS, O SEA QUE CADA MESA VERÁ SUS PEDIDOS Y EN LA BASE DE DATOS SALDRA QUIEN PIDIO EL PEDIDO Y QUE.
+
+
+siempre que vayan a usar el usuario , cierren sesión y inicien de nuevo.
+
+en el cpanel pueden hacer todo, agregar o quitar usuarios, mesas, productos, agregar su stock, revisar los pedidos,etc.
+falta pulir las cosas no mas, despues de que me lo devuelvan.
+
+*************ARREGLEN LOS ESTILOS DE LOS DOS HTML, Y USEN LOS ESTILOS QUE ESTAN AHI, NADA MAS, DESPUES YO LO TERMINO, Y USTEDES LE DAN DE NUEVO.

@@ -1,0 +1,61 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú de Pedidos</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <script src="{% static 'js/menu.js' %}" defer></script>
+    <meta name="mesa-id" content="{{ user.mesa.id }}"> <!-- Meta tag para el ID de la mesa -->
+
+</head>
+<body>
+    <header>
+        <div class="header-options">
+            <div class="option">Pedidos <span class="notification">15</span></div>
+            <div class="option active">Local <span class="notification">2</span></div>
+            <a href="{% url 'logout' %}" class="logout-button">Cerrar Sesión</a>
+        </div>
+    </header>
+
+    <div class="categories">
+        <button class="category-button active" onclick="filterCategory('all')">Todo</button>
+        <button class="category-button" onclick="filterCategory('platos')">Platos</button>
+        <button class="category-button" onclick="filterCategory('postres')">Postres</button>
+        <button class="category-button" onclick="filterCategory('bebidas')">Bebidas</button>
+    </div>
+    
+    <main>
+        <section class="menu">
+            <!-- Los productos se insertarán aquí dinámicamente -->
+        </section>
+    
+        <section class="order">
+            <h2>COMANDA</h2>
+            <div class="order-details">
+                <p>Mesa <span id="mesa-number">{{ user.mesa.numero }}</span></p> <!-- Mostrar el número de la mesa del usuario -->
+                <p id="mesa-status"></p>
+            </div>
+            <div class="order-items">
+                <!-- Los items de la comanda se insertarán aquí dinámicamente -->
+            </div>
+            <div class="order-summary">
+                <p>Total a pagar: <span class="total">0</span> €</p>
+            </div>
+            <div class="order-actions">
+                <button class="pay">Pagar</button>
+                <button class="back">Volver</button>
+            </div>
+        </section>
+    
+        <section class="recent-order">
+            <h2>Pedido Reciente</h2>
+            <div class="recent-order-details">
+                <!-- Los detalles del pedido se insertarán aquí -->
+            </div>
+        </section>
+    </main>
+</body>
+</html>
