@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-s&2#@#7(s1q*-^cm*j7ub=g2j+^xuc#gcp#!h^$(s5xq!l)h4^
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['sebakaze.pythonanywhere.com']
 
 
 # Application definition
@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'sistema_pedidos'
 ]
 
@@ -48,7 +49,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
+CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = 'patagonia_fisher.urls'
 
@@ -78,10 +81,21 @@ WSGI_APPLICATION = 'patagonia_fisher.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'sebakaze$pfisherdb',
+#         'USER': 'sebakaze',
+#         'PASSWORD': 'pfisherdb',  # Corregido a 'PASSWORD' en mayúsculas
+#         'HOST': 'sebakaze.mysql.pythonanywhere-services.com',
+#         'PORT': '3306',
+#     }
+# }
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': '/home/sebakaze/patagoniaFisher/db.sqlite3',  # Ruta absoluta a tu archivo SQLite
     }
 }
 
@@ -120,8 +134,19 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
+
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'sistema_pedidos/static')]
+
+# Directorio de archivos estáticos
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'sistema_pedidos', 'static'),
+]
+
+# Directorio donde se recopilan los archivos estáticos (para producción)
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# STATIC_URL = '/static/'
+# STATICFILES_DIRS = [os.path.join(BASE_DIR, 'sistema_pedidos/static')]
 
 
 

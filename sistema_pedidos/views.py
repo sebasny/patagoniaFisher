@@ -15,22 +15,23 @@ def index(request):
     return render(request, 'index.html')
 
 
+
 def login_user(request):
-    """Maneja el inicio de sesión del usuario."""
+    """Maneja el inicio de sesión del usuario"""
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
+
+        # Intentamos autenticar al usuario
         user = authenticate(request, username=username, password=password)
-        
+
         if user is not None:
             login(request, user)
-            return redirect('index')
+            return redirect('index')  # Redirigir a la página de inicio
         else:
             messages.error(request, 'Nombre de usuario o contraseña incorrectos.')
 
-    return render(request, 'login.html')
-
-
+    return render(request, 'login.html')  # Redirige al formulario de login si GET o fallo en POST
 def logout_user(request):
     """Cierra la sesión del usuario y redirige a la página de inicio de sesión."""
     logout(request)
@@ -61,16 +62,16 @@ def crear_pedido(request):
     for item in items:
         producto_id = item['producto_id']
         cantidad = item['cantidad']
-        
+
         producto = Producto.objects.get(id=producto_id)
-        
+
         if producto.stock < cantidad:  # Verificar si hay suficiente stock
             return JsonResponse({'error': f'No hay suficiente stock para {producto.nombre}'}, status=400)
 
         # Si hay stock suficiente, crea el pedido y reduce el stock
         pedido = Pedido.objects.create(mesa_id=mesa_id)
         DetallePedido.objects.create(pedido=pedido, producto=producto, cantidad=cantidad, precio=producto.precio)
-        
+
         # Reducir el stock
         producto.stock -= cantidad
         producto.save()
@@ -78,20 +79,47 @@ def crear_pedido(request):
     return JsonResponse({'mensaje': 'Pedido creado con éxito!'}, status=201)
 
 
+# @require_http_methods(['GET'])
+# def obtener_pedidos(request):
+#     """Obtiene la lista de pedidos realizados."""
+#     pedidos = Pedido.objects.prefetch_related('detalles').all()
+#     resultado = []
+
+#     for pedido in pedidos:
+#         detalles = [f"{detalle.cantidad} x {detalle.producto.nombre}" for detalle in pedido.detalles.all()]
+#         resultado.append({
+#             'id': pedido.id,
+#             'mesa_id': pedido.mesa.id,
+#             'estado': pedido.estado,
+#             'fecha': pedido.fecha.strftime('%Y-%m-%d %H:%M:%S'),  # Formato de fecha
+#             'detalles': ', '.join(detalles)  # Lista de detalles en una cadena
+#         })
+
+#     return JsonResponse({'pedidos': resultado}, status=200)
+
+
 @require_http_methods(['GET'])
 def obtener_pedidos(request):
-    """Obtiene la lista de pedidos realizados."""
+    """Obtiene la lista de pedidos realizados con detalles individuales de cada producto."""
     pedidos = Pedido.objects.prefetch_related('detalles').all()
     resultado = []
-    
+
     for pedido in pedidos:
-        detalles = [f"{detalle.cantidad} x {detalle.producto.nombre}" for detalle in pedido.detalles.all()]
+        detalles = [
+            {
+                'producto_id': detalle.producto.id,
+                'nombre': detalle.producto.nombre,
+                'cantidad': detalle.cantidad,
+                'precio': detalle.precio  # Precio del producto en el momento del pedido
+            }
+            for detalle in pedido.detalles.all()
+        ]
         resultado.append({
             'id': pedido.id,
-            'mesa_id': pedido.mesa.id,
+            'mesa_id': pedido.mesa.id if pedido.mesa else None,
             'estado': pedido.estado,
-            'fecha': pedido.fecha.strftime('%Y-%m-%d %H:%M:%S'),  # Formato de fecha
-            'detalles': ', '.join(detalles)  # Lista de detalles en una cadena
+            'fecha': pedido.fecha.strftime('%Y-%m-%d %H:%M:%S'),
+            'detalles': detalles
         })
-    
+
     return JsonResponse({'pedidos': resultado}, status=200)

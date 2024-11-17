@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Iniciar Sesión</title>
-    <script src="{% static 'login/login.js' %}"></script>
+    <script src="{% static 'js/login/login.js' %}"></script>
     <link rel="stylesheet" href="{% static 'css/login.css' %}"> <!-- Cambia 'login/login.js' según tu estructura -->
 </head>
 <body>
@@ -19,7 +19,7 @@
                 {% endfor %}
             </div>
         {% endif %}
-        
+
         <div class="form-group">
             <label for="username">Usuario:</label>
             <input type="text" id="username" name="username" required>
